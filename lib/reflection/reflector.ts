@@ -6,13 +6,13 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { Type } from '../facade/type';
-import { PlatformReflectionCapabilities } from './platform_reflection_capabilities';
-import { ReflectorReader } from './reflector_reader';
-import { GetterFn, MethodFn, SetterFn } from './types';
+import { Type } from "../facade/type";
+import { PlatformReflectionCapabilities } from "./platform_reflection_capabilities";
+import { ReflectorReader } from "./reflector_reader";
+import { GetterFn, MethodFn, SetterFn } from "./types";
 
-export { PlatformReflectionCapabilities } from './platform_reflection_capabilities';
-export { GetterFn, MethodFn, SetterFn } from './types';
+export { PlatformReflectionCapabilities } from "./platform_reflection_capabilities";
+export { GetterFn, MethodFn, SetterFn } from "./types";
 
 /**
  * Provides access to reflection data about symbols. Used internally by Angular
@@ -67,8 +67,18 @@ export class Reflector extends ReflectorReader {
     return this.reflectionCapabilities.resourceUri(type);
   }
 
-  resolveIdentifier(name: string, moduleUrl: string, members: string[] | null, runtime: any): any {
-    return this.reflectionCapabilities.resolveIdentifier(name, moduleUrl, members, runtime);
+  resolveIdentifier(
+    name: string,
+    moduleUrl: string,
+    members: string[] | null,
+    runtime: any
+  ): any {
+    return this.reflectionCapabilities.resolveIdentifier(
+      name,
+      moduleUrl,
+      members,
+      runtime
+    );
   }
 
   resolveEnum(identifier: any, name: string): any {

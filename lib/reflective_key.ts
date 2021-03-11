@@ -6,9 +6,9 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { stringify } from './facade/lang';
+import { stringify } from "./facade/lang";
 
-import { resolveForwardRef } from './forward_ref';
+import { resolveForwardRef } from "./forward_ref";
 
 /**
  * A unique object used for retrieving items from the {@link ReflectiveInjector}.
@@ -32,7 +32,7 @@ export class ReflectiveKey {
    */
   constructor(public token: Object, public id: number) {
     if (!token) {
-      throw new Error('Token must be defined!');
+      throw new Error("Token must be defined!");
     }
   }
 

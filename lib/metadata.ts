@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { makeDecorator, makeParamDecorator } from './util/decorators';
+import { makeDecorator, makeParamDecorator } from "./util/decorators";
 
 /**
  * Type of the Inject decorator / constructor function.
@@ -59,7 +59,9 @@ export interface Inject {
  * @stable
  * @Annotation
  */
-export const Inject: InjectDecorator = makeParamDecorator('Inject', [['token', undefined]]);
+export const Inject: InjectDecorator = makeParamDecorator("Inject", [
+  ["token", undefined],
+]);
 
 /**
  * Type of the Optional decorator / constructor function.
@@ -104,7 +106,7 @@ export interface Optional {}
  * @stable
  * @Annotation
  */
-export const Optional: OptionalDecorator = makeParamDecorator('Optional', []);
+export const Optional: OptionalDecorator = makeParamDecorator("Optional", []);
 
 /**
  * Type of the Injectable decorator / constructor function.
@@ -151,7 +153,9 @@ export interface Injectable {}
  * @stable
  * @Annotation
  */
-export const Injectable: InjectableDecorator = <InjectableDecorator>makeDecorator('Injectable', []);
+export const Injectable: InjectableDecorator = <InjectableDecorator>(
+  makeDecorator("Injectable", [])
+);
 
 /**
  * Type of the Self decorator / constructor function.
@@ -195,7 +199,7 @@ export interface Self {}
  * @stable
  * @Annotation
  */
-export const Self: SelfDecorator = makeParamDecorator('Self', []);
+export const Self: SelfDecorator = makeParamDecorator("Self", []);
 
 /**
  * Type of the SkipSelf decorator / constructor function.
@@ -239,7 +243,7 @@ export interface SkipSelf {}
  * @stable
  * @Annotation
  */
-export const SkipSelf: SkipSelfDecorator = makeParamDecorator('SkipSelf', []);
+export const SkipSelf: SkipSelfDecorator = makeParamDecorator("SkipSelf", []);
 
 /**
  * Type of the Host decorator / constructor function.
@@ -284,4 +288,4 @@ export interface Host {}
  * @stable
  * @Annotation
  */
-export const Host: HostDecorator = makeParamDecorator('Host', []);
+export const Host: HostDecorator = makeParamDecorator("Host", []);

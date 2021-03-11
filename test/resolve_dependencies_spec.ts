@@ -1,6 +1,6 @@
-import { resolveDependencies } from '../lib/util/resolve_dependencies';
-import { Injectable, Optional, Inject, Provider } from '../lib';
-import { ReflectiveInjector } from '../lib/reflective_injector';
+import { resolveDependencies } from "../lib/util/resolve_dependencies";
+import { Injectable, Optional, Inject, Provider } from "../lib";
+import { ReflectiveInjector } from "../lib/reflective_injector";
 
 class Engine {}
 
@@ -37,16 +37,16 @@ function createInjector(providers: Provider[]): ReflectiveInjector {
   return ReflectiveInjector.resolveAndCreate(providers);
 }
 
-describe('resolveDependencies', function() {
+describe("resolveDependencies", function () {
   let deps: Array<new (...args: any[]) => any>;
   let injector: ReflectiveInjector | null;
 
-  beforeEach(function() {
+  beforeEach(function () {
     deps = [];
     injector = null;
   });
 
-  it('should resolve direct dependencies', function() {
+  it("should resolve direct dependencies", function () {
     deps = resolveDependencies(Dashboard);
 
     expect(deps).toEqual([Dashboard, DashboardSoftware]);
@@ -56,27 +56,36 @@ describe('resolveDependencies', function() {
     expect(injector.get(Dashboard) instanceof Dashboard).toBe(true);
   });
 
-  it('should resolve dependencies of dependencies', function() {
+  it("should resolve dependencies of dependencies", function () {
     deps = resolveDependencies(CarWithDashboard);
 
-    expect(deps).toEqual([CarWithDashboard, Engine, Dashboard, DashboardSoftware]);
+    expect(deps).toEqual([
+      CarWithDashboard,
+      Engine,
+      Dashboard,
+      DashboardSoftware,
+    ]);
 
     injector = createInjector(deps);
 
-    expect(injector.get(CarWithDashboard) instanceof CarWithDashboard).toBe(true);
+    expect(injector.get(CarWithDashboard) instanceof CarWithDashboard).toBe(
+      true
+    );
   });
 
-  it('should resolve optional dependencies', function() {
+  it("should resolve optional dependencies", function () {
     deps = resolveDependencies(CarWithOptionalEngine);
 
     expect(deps).toEqual([CarWithOptionalEngine, Engine]);
 
     injector = createInjector(deps);
 
-    expect(injector.get(CarWithOptionalEngine) instanceof CarWithOptionalEngine).toBe(true);
+    expect(
+      injector.get(CarWithOptionalEngine) instanceof CarWithOptionalEngine
+    ).toBe(true);
   });
 
-  it('should resolve re-provided dependencies', function() {
+  it("should resolve re-provided dependencies", function () {
     deps = resolveDependencies(CarWithInject);
 
     expect(deps).toEqual([CarWithInject, TurboEngine]);

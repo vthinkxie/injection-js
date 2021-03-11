@@ -1,5 +1,9 @@
-import { ReflectiveInjector } from '../reflective_injector';
-import { ResolvedReflectiveProvider, ResolvedReflectiveFactory, ReflectiveDependency } from '../reflective_provider';
+import { ReflectiveInjector } from "../reflective_injector";
+import {
+  ResolvedReflectiveProvider,
+  ResolvedReflectiveFactory,
+  ReflectiveDependency,
+} from "../reflective_provider";
 
 type Constructor = new (...args: any[]) => any;
 
@@ -58,9 +62,15 @@ export function resolveDependencies(...inputs: Constructor[]) {
     // resolve all dependencies of the provided class and run the `resolver()` function
     // on their constructor functions.
     ReflectiveInjector.resolve([klass])
-      .reduce((a, x: ResolvedReflectiveProvider) => a.concat(x.resolvedFactories), [] as ResolvedReflectiveFactory[])
-      .reduce((a, r: ResolvedReflectiveFactory) => a.concat(r.dependencies), [] as ReflectiveDependency[])
-      .forEach(d => resolver(d.key.token as Constructor));
+      .reduce(
+        (a, x: ResolvedReflectiveProvider) => a.concat(x.resolvedFactories),
+        [] as ResolvedReflectiveFactory[]
+      )
+      .reduce(
+        (a, r: ResolvedReflectiveFactory) => a.concat(r.dependencies),
+        [] as ReflectiveDependency[]
+      )
+      .forEach((d) => resolver(d.key.token as Constructor));
   }
 
   for (const input of inputs) {

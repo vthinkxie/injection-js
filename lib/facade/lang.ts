@@ -1,4 +1,4 @@
-import { Injector } from '../injector';
+import { Injector } from "../injector";
 /**
  * @license
  * Copyright Google Inc. All Rights Reserved.
@@ -30,15 +30,18 @@ export interface BrowserNodeGlobal {
 }
 
 // TODO(jteplitz602): Load WorkerGlobalScope from lib.webworker.d.ts file #3492
-declare var WorkerGlobalScope: any /** TODO #9100 */;
+declare let WorkerGlobalScope: any /** TODO #9100 */;
 // CommonJS / Node have global context exposed as "global" variable.
 // We don't want to include the whole node.d.ts this this compilation unit so we'll just fake
 // the global "global" var for now.
-declare var global: any /** TODO #9100 */;
+declare let global: any /** TODO #9100 */;
 
 let globalScope: BrowserNodeGlobal;
-if (typeof window === 'undefined') {
-  if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
+if (typeof window === "undefined") {
+  if (
+    typeof WorkerGlobalScope !== "undefined" &&
+    self instanceof WorkerGlobalScope
+  ) {
     // TODO: Replace any with WorkerGlobalScope from lib.webworker.d.ts #3492
     globalScope = <any>self;
   } else {
@@ -59,12 +62,12 @@ export function isPresent<T>(obj: T): obj is NonNullable<T> {
 }
 
 export function stringify(token: any): string {
-  if (typeof token === 'string') {
+  if (typeof token === "string") {
     return token;
   }
 
   if (token == null) {
-    return '' + token;
+    return "" + token;
   }
 
   if (token.overriddenName) {
@@ -76,7 +79,7 @@ export function stringify(token: any): string {
   }
 
   const res = token.toString();
-  const newLineIndex = res.indexOf('\n');
+  const newLineIndex = res.indexOf("\n");
   return newLineIndex === -1 ? res : res.substring(0, newLineIndex);
 }
 

@@ -6,8 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { stringify } from './facade/lang';
-import { Type } from './facade/type';
+import { stringify } from "./facade/lang";
+import { Type } from "./facade/type";
 
 /**
  * An interface that a function passed into {@link forwardRef} has to implement.
@@ -35,7 +35,7 @@ export interface ForwardRefFn {
  */
 export function forwardRef(forwardRefFn: ForwardRefFn): Type<any> {
   (<any>forwardRefFn).__forward_ref__ = forwardRef;
-  (<any>forwardRefFn).toString = function() {
+  (<any>forwardRefFn).toString = function () {
     return stringify(this());
   };
   return <Type<any>>(<any>forwardRefFn);
@@ -54,7 +54,11 @@ export function forwardRef(forwardRefFn: ForwardRefFn): Type<any> {
  * @experimental
  */
 export function resolveForwardRef(type: any): any {
-  if (typeof type === 'function' && type.hasOwnProperty('__forward_ref__') && type.__forward_ref__ === forwardRef) {
+  if (
+    typeof type === "function" &&
+    type.hasOwnProperty("__forward_ref__") &&
+    type.__forward_ref__ === forwardRef
+  ) {
     return (type as ForwardRefFn)();
   } else {
     return type;

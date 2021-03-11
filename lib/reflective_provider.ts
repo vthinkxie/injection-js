@@ -6,24 +6,44 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { reflector } from './reflection/reflection';
-import { Type } from './facade/type';
+import { reflector } from "./reflection/reflection";
+import { Type } from "./facade/type";
 
-import { resolveForwardRef } from './forward_ref';
-import { InjectionToken } from './injection_token';
-import { Inject, Optional, Self, SkipSelf } from './metadata';
-import { ClassProvider, ExistingProvider, FactoryProvider, Provider, TypeProvider, ValueProvider } from './provider';
-import { invalidProviderError, mixingMultiProvidersWithRegularProvidersError, noAnnotationError } from './reflective_errors';
-import { ReflectiveKey } from './reflective_key';
+import { resolveForwardRef } from "./forward_ref";
+import { InjectionToken } from "./injection_token";
+import { Inject, Optional, Self, SkipSelf } from "./metadata";
+import {
+  ClassProvider,
+  ExistingProvider,
+  FactoryProvider,
+  Provider,
+  TypeProvider,
+  ValueProvider,
+} from "./provider";
+import {
+  invalidProviderError,
+  mixingMultiProvidersWithRegularProvidersError,
+  noAnnotationError,
+} from "./reflective_errors";
+import { ReflectiveKey } from "./reflective_key";
 
-interface NormalizedProvider extends TypeProvider, ValueProvider, ClassProvider, ExistingProvider, FactoryProvider {}
+interface NormalizedProvider
+  extends TypeProvider,
+    ValueProvider,
+    ClassProvider,
+    ExistingProvider,
+    FactoryProvider {}
 
 /**
  * `Dependency` is used by the framework to extend DI.
  * This is internal to Angular and should not be used directly.
  */
 export class ReflectiveDependency {
-  constructor(public key: ReflectiveKey, public optional: boolean, public visibility: Self | SkipSelf | null) {}
+  constructor(
+    public key: ReflectiveKey,
+    public optional: boolean,
+    public visibility: Self | SkipSelf | null
+  ) {}
 
   static fromKey(key: ReflectiveKey): ReflectiveDependency {
     return new ReflectiveDependency(key, false, null);
@@ -69,7 +89,11 @@ export interface ResolvedReflectiveProvider {
 
 // tslint:disable-next-line:class-name
 export class ResolvedReflectiveProvider_ implements ResolvedReflectiveProvider {
-  constructor(public key: ReflectiveKey, public resolvedFactories: ResolvedReflectiveFactory[], public multiProvider: boolean) {}
+  constructor(
+    public key: ReflectiveKey,
+    public resolvedFactories: ResolvedReflectiveFactory[],
+    public multiProvider: boolean
+  ) {}
 
   get resolvedFactory(): ResolvedReflectiveFactory {
     return this.resolvedFactories[0];
@@ -97,7 +121,9 @@ export class ResolvedReflectiveFactory {
 /**
  * Resolve a single provider.
  */
-function resolveReflectiveFactory(provider: NormalizedProvider): ResolvedReflectiveFactory {
+function resolveReflectiveFactory(
+  provider: NormalizedProvider
+): ResolvedReflectiveFactory {
   let factoryFn: Function;
   let resolvedDeps: ReflectiveDependency[];
   if (provider.useClass) {
@@ -106,7 +132,9 @@ function resolveReflectiveFactory(provider: NormalizedProvider): ResolvedReflect
     resolvedDeps = _dependenciesFor(useClass);
   } else if (provider.useExisting) {
     factoryFn = (aliasInstance: any) => aliasInstance;
-    resolvedDeps = [ReflectiveDependency.fromKey(ReflectiveKey.get(provider.useExisting))];
+    resolvedDeps = [
+      ReflectiveDependency.fromKey(ReflectiveKey.get(provider.useExisting)),
+    ];
   } else if (provider.useFactory) {
     factoryFn = provider.useFactory;
     resolvedDeps = constructDependencies(provider.useFactory, provider.deps);
@@ -123,7 +151,9 @@ function resolveReflectiveFactory(provider: NormalizedProvider): ResolvedReflect
  * {@link Injector} internally only uses {@link ResolvedProvider}, {@link Provider} contains
  * convenience provider syntax.
  */
-function resolveReflectiveProvider(provider: NormalizedProvider): ResolvedReflectiveProvider {
+function resolveReflectiveProvider(
+  provider: NormalizedProvider
+): ResolvedReflectiveProvider {
   return new ResolvedReflectiveProvider_(
     ReflectiveKey.get(provider.provide),
     [resolveReflectiveFactory(provider)],
@@ -134,10 +164,15 @@ function resolveReflectiveProvider(provider: NormalizedProvider): ResolvedReflec
 /**
  * Resolve a list of Providers.
  */
-export function resolveReflectiveProviders(providers: Provider[]): ResolvedReflectiveProvider[] {
+export function resolveReflectiveProviders(
+  providers: Provider[]
+): ResolvedReflectiveProvider[] {
   const normalized = _normalizeProviders(providers, []);
   const resolved = normalized.map(resolveReflectiveProvider);
-  const resolvedProviderMap = mergeResolvedReflectiveProviders(resolved, new Map());
+  const resolvedProviderMap = mergeResolvedReflectiveProviders(
+    resolved,
+    new Map()
+  );
   return Array.from(resolvedProviderMap.values());
 }
 
@@ -167,7 +202,11 @@ export function mergeResolvedReflectiveProviders(
     } else {
       let resolvedProvider: ResolvedReflectiveProvider;
       if (provider.multiProvider) {
-        resolvedProvider = new ResolvedReflectiveProvider_(provider.key, provider.resolvedFactories.slice(), provider.multiProvider);
+        resolvedProvider = new ResolvedReflectiveProvider_(
+          provider.key,
+          provider.resolvedFactories.slice(),
+          provider.multiProvider
+        );
       } else {
         resolvedProvider = provider;
       }
@@ -177,11 +216,14 @@ export function mergeResolvedReflectiveProviders(
   return normalizedProvidersMap;
 }
 
-function _normalizeProviders(providers: Provider[], res: Provider[]): NormalizedProvider[] {
-  providers.forEach(b => {
+function _normalizeProviders(
+  providers: Provider[],
+  res: Provider[]
+): NormalizedProvider[] {
+  providers.forEach((b) => {
     if (b instanceof Type) {
       res.push({ provide: b, useClass: b });
-    } else if (b && typeof b === 'object' && (b as any).provide !== undefined) {
+    } else if (b && typeof b === "object" && (b as any).provide !== undefined) {
       res.push(b as NormalizedProvider);
     } else if (b instanceof Array) {
       _normalizeProviders(b as Provider[], res);
@@ -193,12 +235,15 @@ function _normalizeProviders(providers: Provider[], res: Provider[]): Normalized
   return res as NormalizedProvider[];
 }
 
-export function constructDependencies(typeOrFunc: any, dependencies?: any[]): ReflectiveDependency[] {
+export function constructDependencies(
+  typeOrFunc: any,
+  dependencies?: any[]
+): ReflectiveDependency[] {
   if (!dependencies) {
     return _dependenciesFor(typeOrFunc);
   } else {
-    const params: any[][] = dependencies.map(t => [t]);
-    return dependencies.map(t => _extractToken(typeOrFunc, t, params));
+    const params: any[][] = dependencies.map((t) => [t]);
+    return dependencies.map((t) => _extractToken(typeOrFunc, t, params));
   }
 }
 
@@ -206,19 +251,23 @@ function _dependenciesFor(typeOrFunc: any): ReflectiveDependency[] {
   const params = reflector.parameters(typeOrFunc);
 
   if (!params) return [];
-  if (params.some(p => p == null)) {
+  if (params.some((p) => p == null)) {
     throw noAnnotationError(typeOrFunc, params);
   }
-  return params.map(p => _extractToken(typeOrFunc, p, params));
+  return params.map((p) => _extractToken(typeOrFunc, p, params));
 }
 
-function _extractToken(typeOrFunc: any, metadata: any[] | any, params: any[][]): ReflectiveDependency {
+function _extractToken(
+  typeOrFunc: any,
+  metadata: any[] | any,
+  params: any[][]
+): ReflectiveDependency {
   let token: any = null;
   let optional = false;
 
   if (!Array.isArray(metadata)) {
     if (metadata instanceof Inject) {
-      return _createDependency(metadata['token'], optional, null);
+      return _createDependency(metadata["token"], optional, null);
     } else {
       return _createDependency(metadata, optional, null);
     }
@@ -232,10 +281,13 @@ function _extractToken(typeOrFunc: any, metadata: any[] | any, params: any[][]):
     if (paramMetadata instanceof Type) {
       token = paramMetadata;
     } else if (paramMetadata instanceof Inject) {
-      token = paramMetadata['token'];
+      token = paramMetadata["token"];
     } else if (paramMetadata instanceof Optional) {
       optional = true;
-    } else if (paramMetadata instanceof Self || paramMetadata instanceof SkipSelf) {
+    } else if (
+      paramMetadata instanceof Self ||
+      paramMetadata instanceof SkipSelf
+    ) {
       visibility = paramMetadata;
     } else if (paramMetadata instanceof InjectionToken) {
       token = paramMetadata;
@@ -251,6 +303,14 @@ function _extractToken(typeOrFunc: any, metadata: any[] | any, params: any[][]):
   }
 }
 
-function _createDependency(token: any, optional: boolean, visibility: Self | SkipSelf | null): ReflectiveDependency {
-  return new ReflectiveDependency(ReflectiveKey.get(token), optional, visibility);
+function _createDependency(
+  token: any,
+  optional: boolean,
+  visibility: Self | SkipSelf | null
+): ReflectiveDependency {
+  return new ReflectiveDependency(
+    ReflectiveKey.get(token),
+    optional,
+    visibility
+  );
 }
