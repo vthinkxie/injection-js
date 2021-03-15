@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { Injector, THROW_IF_NOT_FOUND } from "./injector";
+import { Injector } from "./injector";
 import { Self, SkipSelf } from "./metadata";
 import { Provider } from "./provider";
 import {
@@ -22,6 +22,7 @@ import {
   ResolvedReflectiveProvider,
   resolveReflectiveProviders,
 } from "./reflective_provider";
+import { THROW_IF_NOT_FOUND } from "./injector_compatibility";
 
 // Threshold for the dynamic version
 const UNDEFINED = new Object();

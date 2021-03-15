@@ -6,23 +6,11 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { stringify } from "./facade/lang";
 import { Type } from "./facade/type";
 
 import { InjectionToken } from "./injection_token";
-
-const _THROW_IF_NOT_FOUND = new Object();
-export const THROW_IF_NOT_FOUND = _THROW_IF_NOT_FOUND;
-
-// tslint:disable-next-line:class-name no-use-before-declare
-class _NullInjector implements Injector {
-  get(token: any, notFoundValue: any = _THROW_IF_NOT_FOUND): any {
-    if (notFoundValue === _THROW_IF_NOT_FOUND) {
-      throw new Error(`No provider for ${stringify(token)}!`);
-    }
-    return notFoundValue;
-  }
-}
+import { THROW_IF_NOT_FOUND } from "./injector_compatibility";
+import { NullInjector } from "./null_injector";
 
 /**
  * @whatItDoes Injector interface
@@ -45,8 +33,8 @@ class _NullInjector implements Injector {
  * @stable
  */
 export abstract class Injector {
-  static THROW_IF_NOT_FOUND = _THROW_IF_NOT_FOUND;
-  static NULL: Injector = new _NullInjector();
+  static THROW_IF_NOT_FOUND = THROW_IF_NOT_FOUND;
+  static NULL: Injector = new NullInjector();
 
   /**
    * Retrieves an instance from the injector based on the provided token.

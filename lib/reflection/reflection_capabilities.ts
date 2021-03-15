@@ -6,11 +6,12 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { global, isPresent, stringify } from "../facade/lang";
 import { Type, isType } from "../facade/type";
 
 import { PlatformReflectionCapabilities } from "./platform_reflection_capabilities";
 import { GetterFn, MethodFn, SetterFn } from "./types";
+import { stringify } from "../util/stringify";
+import { global } from "../util/global";
 
 /**
  * Attention: This regex has to hold even if the code is minified!

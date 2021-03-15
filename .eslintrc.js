@@ -18,6 +18,7 @@ module.exports = {
   plugins: ["@typescript-eslint"],
   rules: {
     "no-prototype-builtins": "off",
+    "@typescript-eslint/no-empty-interface": "off",
   },
   overrides: [
     {

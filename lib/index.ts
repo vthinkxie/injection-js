@@ -31,7 +31,7 @@ export {
   ResolvedReflectiveProvider,
 } from "./reflective_provider";
 export { ReflectiveKey } from "./reflective_key";
-export { InjectionToken, OpaqueToken } from "./injection_token";
+export { InjectionToken } from "./injection_token";
 export {
   Class,
   TypeDecorator,

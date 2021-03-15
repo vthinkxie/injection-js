@@ -24,7 +24,8 @@ import { ReflectiveInjector_ } from "../lib/reflective_injector";
 import { ResolvedReflectiveProvider_ } from "../lib/reflective_provider";
 import { getOriginalError } from "../lib/facade/errors";
 
-import { isPresent, stringify } from "../lib/facade/lang";
+import { isPresent } from "../lib/facade/lang";
+import { stringify } from "../lib/util/stringify";
 
 class Engine {}
 

@@ -6,8 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { stringify } from "./facade/lang";
 import { Type } from "./facade/type";
+import { stringify } from "./util/stringify";
 
 /**
  * An interface that a function passed into {@link forwardRef} has to implement.

@@ -8,20 +8,22 @@
 
 import { Injector } from "../lib";
 
+class SomeToken {}
+
 describe("Injector.NULL", () => {
   it("should throw if no arg is given", () => {
-    expect(() => Injector.NULL.get("someToken")).toThrowError(
-      "No provider for someToken!"
+    expect(() => Injector.NULL.get(SomeToken)).toThrowError(
+      "No provider for SomeToken!"
     );
   });
 
   it("should throw if THROW_IF_NOT_FOUND is given", () => {
     expect(() =>
-      Injector.NULL.get("someToken", Injector.THROW_IF_NOT_FOUND)
-    ).toThrowError("No provider for someToken!");
+      Injector.NULL.get(SomeToken, Injector.THROW_IF_NOT_FOUND)
+    ).toThrowError("No provider for SomeToken!");
   });
 
   it("should return the default value", () => {
-    expect(Injector.NULL.get("someToken", "notFound")).toEqual("notFound");
+    expect(Injector.NULL.get(SomeToken, "notFound")).toEqual("notFound");
   });
 });

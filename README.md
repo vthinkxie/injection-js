@@ -31,7 +31,7 @@ $ yarn add injection-js
 >
 > Also for TypeScript you will need to enable `experimentalDecorators` and `emitDecoratorMetadata` flags within your `tsconfig.json`
 
-## TypeScript
+## Usage
 
 ```ts
 import 'reflect-metadata';
@@ -62,71 +62,12 @@ const injector = ReflectiveInjector.resolveAndCreate([Service, Http]);
 console.log(injector.get(Service) instanceof Service);
 ```
 
-## ES6
-
-```js
-const { Inject, ReflectiveInjector } = require('injection-js');
-
-class Http {}
-
-class Service {
-  static get parameters() {
-    return [new Inject(Http)];
-  }
-
-  constructor(http) {
-    this.http = http;
-  }
-}
-
-const injector = ReflectiveInjector.resolveAndCreate([Http, Service]);
-
-console.log(injector.get(Service) instanceof Service);
-```
-
-## ES5
-
-```js
-require('reflect-metadata');
-var di = require('injection-js');
-
-var Http = di.Class({
-  constructor: function() {},
-});
-
-var Service = di.Class({
-  constructor: [
-    Http,
-    function(http) {
-      this.http = http;
-    },
-  ],
-});
-
-var injector = di.ReflectiveInjector.resolveAndCreate([Http, Service]);
-
-console.log(injector.get(Service) instanceof Service);
-```
-
 # API
 
 For full documentation check Angular DI docs:
 
 - [Dependency Injection](https://v4.angular.io/guide/dependency-injection)
 - [Dependency Injection in action](https://v4.angular.io/guide/dependency-injection-in-action)
-- [Dependency Injection without Typescript](https://v2.angular.io/docs/ts/latest/cookbook/ts-to-js.html#!#dependency-injection)
-
-# Ecosystem
-
-This is a list of libraries that are using injection-js. If you have a suggestion on what to add, please don't hesitate to submit a PR.
-
-## Libraries
-
-- [ng-packagr](https://github.com/ng-packagr/ng-packagr) Transpile your libraries to Angular Package Format. Part of the official Angular CLI.
-- [@martin_hotell/axios-http](https://github.com/Hotell/axios-http) Injectable axios HttpClient wrapper for browser and node
-- [@martin_hotell/rea-di](https://github.com/Hotell/rea-di) Dependency injection for React done right. Hierarchical injection on both component and service layer powered by injection-js (Angular DI framework) 🖖
-- [rxstack](https://github.com/rxstack/rxstack) RxStack is a realtime object-oriented framework which helps you build a micro service web applications on top of other frameworks like express and socketio by adding an abstraction layer.
-- [ServeRX-ts](https://github.com/mflorence99/serverx-ts) Experimental [Node.js](https://nodejs.org) HTTP framework using [RxJS](https://rxjs.dev), built with [TypeScript](https://www.typescriptlang.org/) and optimized for serverless deployments. Features declarative routes and dependency injection powered by injection-js.
 
 # License
 

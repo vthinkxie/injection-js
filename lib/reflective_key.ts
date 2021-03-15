@@ -6,9 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { stringify } from "./facade/lang";
-
 import { resolveForwardRef } from "./forward_ref";
+import { stringify } from "./util/stringify";
 
 /**
  * A unique object used for retrieving items from the {@link ReflectiveInjector}.

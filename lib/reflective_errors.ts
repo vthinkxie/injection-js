@@ -8,11 +8,12 @@
 
 import { wrappedError } from "./facade/errors";
 import { ERROR_ORIGINAL_ERROR, getOriginalError } from "./facade/errors";
-import { stringify } from "./facade/lang";
 import { Type } from "./facade/type";
 
 import { ReflectiveInjector } from "./reflective_injector";
 import { ReflectiveKey } from "./reflective_key";
+import { stringify } from "./util/stringify";
+import { Provider } from "./provider";
 
 function findFirstClosedCycle(keys: any[]): any[] {
   const res: any[] = [];
@@ -179,7 +180,7 @@ export function instantiationError(
  * expect(() => Injector.resolveAndCreate(["not a type"])).toThrowError();
  * ```
  */
-export function invalidProviderError(provider: any) {
+export function invalidProviderError(provider: Provider): Error {
   return Error(
     `Invalid provider - only instances of Provider and Type are allowed, got: ${provider}`
   );
