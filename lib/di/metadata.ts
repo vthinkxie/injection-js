@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { makeDecorator, makeParamDecorator } from "./util/decorators";
+import { makeDecorator, makeParamDecorator } from "../util/decorators";
 
 /**
  * Type of the Inject decorator / constructor function.
@@ -244,48 +244,3 @@ export interface SkipSelf {}
  * @Annotation
  */
 export const SkipSelf: SkipSelfDecorator = makeParamDecorator("SkipSelf", []);
-
-/**
- * Type of the Host decorator / constructor function.
- *
- * @stable
- */
-export interface HostDecorator {
-  /**
-   * @whatItDoes Specifies that an injector should retrieve a dependency from any injector until
-   * reaching the host element of the current component.
-   * @howToUse
-   * ```
-   * @Injectable()
-   * class Car {
-   *   constructor(@Host() public engine:Engine) {}
-   * }
-   * ```
-   *
-   * @description
-   * For more details, see the {@linkDocs guide/dependency-injection "Dependency Injection Guide"}.
-   *
-   * ### Example
-   *
-   * {@example core/di/ts/metadata_spec.ts region='Host'}
-   *
-   * @stable
-   */
-  (): any;
-  new (): Host;
-}
-
-/**
- * Type of the Host metadata.
- *
- * @stable
- */
-export interface Host {}
-
-/**
- * Host decorator and metadata.
- *
- * @stable
- * @Annotation
- */
-export const Host: HostDecorator = makeParamDecorator("Host", []);

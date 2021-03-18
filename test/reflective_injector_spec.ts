@@ -20,11 +20,9 @@ import {
   Self,
   forwardRef,
 } from "../lib";
-import { ReflectiveInjector_ } from "../lib/reflective_injector";
-import { ResolvedReflectiveProvider_ } from "../lib/reflective_provider";
-import { getOriginalError } from "../lib/facade/errors";
-
-import { isPresent } from "../lib/facade/lang";
+import { ReflectiveInjector_ } from "../lib/di/reflective_injector";
+import { ResolvedReflectiveProvider_ } from "../lib/di/reflective_provider";
+import { getOriginalError } from "../lib/util/errors";
 import { stringify } from "../lib/util/stringify";
 
 class Engine {}
@@ -96,6 +94,10 @@ const dynamicProviders = [
   { provide: "provider9", useValue: 1 },
   { provide: "provider10", useValue: 1 },
 ];
+
+function isPresent<T>(obj: T): obj is NonNullable<T> {
+  return obj != null;
+}
 
 function createInjector(
   providers: Provider[],

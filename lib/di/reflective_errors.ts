@@ -6,13 +6,13 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { wrappedError } from "./facade/errors";
-import { ERROR_ORIGINAL_ERROR, getOriginalError } from "./facade/errors";
-import { Type } from "./facade/type";
+import { wrappedError } from "../util/errors";
+import { ERROR_ORIGINAL_ERROR, getOriginalError } from "../util/errors";
+import { Type } from "../interface/type";
 
 import { ReflectiveInjector } from "./reflective_injector";
 import { ReflectiveKey } from "./reflective_key";
-import { stringify } from "./util/stringify";
+import { stringify } from "../util/stringify";
 import { Provider } from "./provider";
 
 function findFirstClosedCycle(keys: any[]): any[] {

@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { Type } from "../lib/facade/type";
+import { Type } from "../lib/interface/type";
 
 import { forwardRef, resolveForwardRef } from "../lib";
 

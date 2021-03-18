@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { Type } from "./facade/type";
+import { Type } from "../interface/type";
 
 /**
  * @whatItDoes Configures the {@link Injector} to return an instance of `Type` when `Type' is used
@@ -32,7 +32,7 @@ import { Type } from "./facade/type";
  *
  * @stable
  */
-export type TypeProvider = Type<any>;
+export interface TypeProvider extends Type<any> {}
 
 /**
  * @whatItDoes Configures the {@link Injector} to return a value for a token.

@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { Type } from "./facade/type";
+import { Type } from "../interface/type";
 
 import { InjectionToken } from "./injection_token";
 import { THROW_IF_NOT_FOUND } from "./injector_compatibility";

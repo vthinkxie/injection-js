@@ -25,7 +25,7 @@ import {
 import { THROW_IF_NOT_FOUND } from "./injector_compatibility";
 
 // Threshold for the dynamic version
-const UNDEFINED = new Object();
+const UNDEFINED = {};
 
 /**
  * A ReflectiveDependency injection container used for instantiating objects and resolving
@@ -164,7 +164,6 @@ export abstract class ReflectiveInjector implements Injector {
     providers: ResolvedReflectiveProvider[],
     parent?: Injector
   ): ReflectiveInjector {
-    // tslint:disable-next-line:no-use-before-declare
     return new ReflectiveInjector_(providers, parent);
   }
 
@@ -427,7 +426,6 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     visibility: Self | SkipSelf | null,
     notFoundValue: any
   ): any {
-    // tslint:disable-next-line:no-use-before-declare
     if (key === INJECTOR_KEY) {
       return this;
     }

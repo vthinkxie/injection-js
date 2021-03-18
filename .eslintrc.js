@@ -17,6 +17,10 @@ module.exports = {
   },
   plugins: ["@typescript-eslint"],
   rules: {
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/ban-types": ["error", { types: { Function: false } }],
+    "@typescript-eslint/no-explicit-any": "off",
     "no-prototype-builtins": "off",
     "@typescript-eslint/no-empty-interface": "off",
   },

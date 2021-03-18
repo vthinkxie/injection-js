@@ -7,7 +7,7 @@
  */
 
 import { global } from "../util/global";
-import { Type } from "../facade/type";
+import { Type } from "../interface/type";
 import { stringify } from "./stringify";
 
 let _nextClassId = 0;
@@ -282,7 +282,7 @@ export function Class(this: any, clsDef: ClassDefinition): Type<any> {
     }
   }
 
-  if (this && this.annotations instanceof Array) {
+  if (this && Array.isArray(this.annotations)) {
     Reflect.defineMetadata("annotations", this.annotations, constructor);
   }
 

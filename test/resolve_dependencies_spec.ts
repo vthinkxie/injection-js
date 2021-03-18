@@ -1,6 +1,6 @@
 import { resolveDependencies } from "../lib/util/resolve_dependencies";
 import { Injectable, Optional, Inject, Provider } from "../lib";
-import { ReflectiveInjector } from "../lib/reflective_injector";
+import { ReflectiveInjector } from "../lib/di/reflective_injector";
 
 class Engine {}
 

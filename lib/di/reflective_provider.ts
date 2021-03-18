@@ -6,8 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { reflector } from "./reflection/reflection";
-import { Type } from "./facade/type";
+import { reflector } from "../reflection/reflection";
+import { Type } from "../interface/type";
 
 import { resolveForwardRef } from "./forward_ref";
 import { InjectionToken } from "./injection_token";
@@ -87,7 +87,6 @@ export interface ResolvedReflectiveProvider {
   multiProvider: boolean;
 }
 
-// tslint:disable-next-line:class-name
 export class ResolvedReflectiveProvider_ implements ResolvedReflectiveProvider {
   constructor(
     public key: ReflectiveKey,

@@ -1,9 +1,9 @@
-import { ReflectiveInjector } from "../reflective_injector";
+import { ReflectiveInjector } from "../di/reflective_injector";
 import {
   ResolvedReflectiveProvider,
   ResolvedReflectiveFactory,
   ReflectiveDependency,
-} from "../reflective_provider";
+} from "../di/reflective_provider";
 
 type Constructor = new (...args: any[]) => any;
 
