@@ -12,32 +12,7 @@
  * The `di` module provides dependency injection container services.
  */
 
-export * from "./di/metadata";
+export * from "./di/index";
 
-export { forwardRef, resolveForwardRef, ForwardRefFn } from "./di/forward_ref";
-
-export { Injector } from "./di/injector";
-export { ReflectiveInjector } from "./di/reflective_injector";
-export {
-  Provider,
-  TypeProvider,
-  ValueProvider,
-  ClassProvider,
-  ExistingProvider,
-  FactoryProvider,
-} from "./di/provider";
-export {
-  ResolvedReflectiveFactory,
-  ResolvedReflectiveProvider,
-} from "./di/reflective_provider";
-export { ReflectiveKey } from "./di/reflective_key";
-export { InjectionToken } from "./di/injection_token";
-export {
-  Class,
-  TypeDecorator,
-  makeDecorator,
-  makeParamDecorator,
-  makePropDecorator,
-} from "./util/decorators";
+export { makeDecorator, makeParamDecorator } from "./util/decorators";
 export { resolveDependencies } from "./util/resolve_dependencies";
-export { Type, isType } from "./interface/type";

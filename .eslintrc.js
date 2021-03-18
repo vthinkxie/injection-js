@@ -19,14 +19,17 @@ module.exports = {
   rules: {
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
-    "@typescript-eslint/ban-types": ["error", { types: { Function: false } }],
+    "@typescript-eslint/ban-types": [
+      "error",
+      { types: { Function: false, Object: false } },
+    ],
     "@typescript-eslint/no-explicit-any": "off",
     "no-prototype-builtins": "off",
     "@typescript-eslint/no-empty-interface": "off",
   },
   overrides: [
     {
-      files: ["test/**/*.ts"],
+      files: ["__tests__/**/*.ts"],
       rules: {
         "@typescript-eslint/no-empty-function": "off",
       },

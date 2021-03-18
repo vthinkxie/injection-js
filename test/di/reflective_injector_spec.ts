@@ -19,11 +19,11 @@ import {
   ReflectiveKey,
   Self,
   forwardRef,
-} from "../lib";
-import { ReflectiveInjector_ } from "../lib/di/reflective_injector";
-import { ResolvedReflectiveProvider_ } from "../lib/di/reflective_provider";
-import { getOriginalError } from "../lib/util/errors";
-import { stringify } from "../lib/util/stringify";
+} from "../../lib";
+import { ReflectiveInjector_ } from "../../lib/di/reflective_injector";
+import { ResolvedReflectiveProvider } from "../../lib/di/reflective_provider";
+import { getOriginalError } from "../../lib/util/errors";
+import { stringify } from "../../lib/util/stringify";
 
 class Engine {}
 
@@ -514,7 +514,7 @@ describe("resolve", () => {
     const providers = ReflectiveInjector.resolve([Engine, [BrokenEngine]]);
     providers.forEach(function (b) {
       if (!b) return; // the result is a sparse array
-      expect(b instanceof ResolvedReflectiveProvider_).toBe(true);
+      expect(b instanceof ResolvedReflectiveProvider).toBe(true);
     });
   });
 

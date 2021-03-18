@@ -29,9 +29,9 @@
  * @stable
  */
 export class InjectionToken<T> {
-  constructor(protected _desc: string) {}
+  constructor(protected desc: string) {}
 
   toString(): string {
-    return `InjectionToken ${this._desc}`;
+    return `InjectionToken ${this.desc}`;
   }
 }

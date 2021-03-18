@@ -9,8 +9,6 @@
 import { Type } from "../interface/type";
 
 import { InjectionToken } from "./injection_token";
-import { THROW_IF_NOT_FOUND } from "./injector_compatibility";
-import { NullInjector } from "./null_injector";
 
 /**
  * @whatItDoes Injector interface
@@ -33,9 +31,6 @@ import { NullInjector } from "./null_injector";
  * @stable
  */
 export abstract class Injector {
-  static THROW_IF_NOT_FOUND = THROW_IF_NOT_FOUND;
-  static NULL: Injector = new NullInjector();
-
   /**
    * Retrieves an instance from the injector based on the provided token.
    * If not found:

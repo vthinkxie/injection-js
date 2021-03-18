@@ -66,45 +66,17 @@ export function isDelegateCtor(typeStr: string): boolean {
   );
 }
 export class ReflectionCapabilities implements PlatformReflectionCapabilities {
-  private _reflect: any;
+  private readonly reflect: any;
 
   constructor(reflect?: any) {
-    this._reflect = reflect || global["Reflect"];
+    this.reflect = reflect || global["Reflect"];
   }
 
   factory<T>(t: Type<T>): (args: any[]) => T {
     return (...args: any[]) => new t(...args);
   }
 
-  /** @internal */
-  _zipTypesAndAnnotations(paramTypes: any[], paramAnnotations: any[]): any[][] {
-    let result: any[][];
-
-    if (typeof paramTypes === "undefined") {
-      result = new Array(paramAnnotations.length);
-    } else {
-      result = new Array(paramTypes.length);
-    }
-
-    for (let i = 0; i < result.length; i++) {
-      // TS outputs Object for parameters without types, while Traceur omits
-      // the annotations. For now we preserve the Traceur behavior to aid
-      // migration, but this can be revisited.
-      if (typeof paramTypes === "undefined") {
-        result[i] = [];
-      } else if (paramTypes[i] && paramTypes[i] != Object) {
-        result[i] = [paramTypes[i]];
-      } else {
-        result[i] = [];
-      }
-      if (paramAnnotations && paramAnnotations[i] != null) {
-        result[i] = result[i].concat(paramAnnotations[i]);
-      }
-    }
-    return result;
-  }
-
-  private _ownParameters(type: Type<any>, parentCtor: any): any[][] | null {
+  private ownParameters(type: Type<any>): any[][] | null {
     const typeStr = type.toString();
     // If we have no decorators, we only have function.length as metadata.
     // In that case, to detect whether a child class declared an own constructor or not,
@@ -118,14 +90,11 @@ export class ReflectionCapabilities implements PlatformReflectionCapabilities {
     }
 
     // API for metadata created by invoking the decorators.
-    if (this._reflect != null && this._reflect.getOwnMetadata != null) {
-      const paramAnnotations = this._reflect.getOwnMetadata("parameters", type);
-      const paramTypes = this._reflect.getOwnMetadata(
-        "design:paramtypes",
-        type
-      );
+    if (this.reflect != null && this.reflect.getOwnMetadata != null) {
+      const paramAnnotations = this.reflect.getOwnMetadata("parameters", type);
+      const paramTypes = this.reflect.getOwnMetadata("design:paramtypes", type);
       if (paramTypes || paramAnnotations) {
-        return this._zipTypesAndAnnotations(paramTypes, paramAnnotations);
+        return zipTypesAndAnnotations(paramTypes, paramAnnotations);
       }
     }
 
@@ -143,32 +112,17 @@ export class ReflectionCapabilities implements PlatformReflectionCapabilities {
       return [];
     }
     const parentCtor = getParentCtor(type);
-    let parameters = this._ownParameters(type, parentCtor);
+    let parameters = this.ownParameters(type);
     if (!parameters && parentCtor !== Object) {
       parameters = this.parameters(parentCtor);
     }
     return parameters || [];
   }
 
-  private _ownAnnotations(
-    typeOrFunc: Type<any>,
-    parentCtor: any
-  ): any[] | null {
-    // Prefer the direct API.
-    if (
-      (<any>typeOrFunc).annotations &&
-      (<any>typeOrFunc).annotations !== parentCtor.annotations
-    ) {
-      let annotations = (<any>typeOrFunc).annotations;
-      if (typeof annotations === "function" && annotations.annotations) {
-        annotations = annotations.annotations;
-      }
-      return annotations;
-    }
-
+  private ownAnnotations(typeOrFunc: Type<any>): any[] | null {
     // API for metadata created by invoking the decorators.
-    if (this._reflect && this._reflect.getOwnMetadata) {
-      return this._reflect.getOwnMetadata("annotations", typeOrFunc);
+    if (this.reflect && this.reflect.getOwnMetadata) {
+      return this.reflect.getOwnMetadata("annotations", typeOrFunc);
     }
     return null;
   }
@@ -178,13 +132,13 @@ export class ReflectionCapabilities implements PlatformReflectionCapabilities {
       return [];
     }
     const parentCtor = getParentCtor(typeOrFunc);
-    const ownAnnotations = this._ownAnnotations(typeOrFunc, parentCtor) || [];
+    const ownAnnotations = this.ownAnnotations(typeOrFunc) || [];
     const parentAnnotations =
       parentCtor !== Object ? this.annotations(parentCtor) : [];
     return parentAnnotations.concat(ownAnnotations);
   }
 
-  private _ownPropMetadata(
+  private ownPropMetadata(
     typeOrFunc: any,
     parentCtor: any
   ): { [key: string]: any[] } | null {
@@ -201,8 +155,8 @@ export class ReflectionCapabilities implements PlatformReflectionCapabilities {
     }
 
     // API for metadata created by invoking the decorators.
-    if (this._reflect && this._reflect.getOwnMetadata) {
-      return this._reflect.getOwnMetadata("propMetadata", typeOrFunc);
+    if (this.reflect && this.reflect.getOwnMetadata) {
+      return this.reflect.getOwnMetadata("propMetadata", typeOrFunc);
     }
     return null;
   }
@@ -219,7 +173,7 @@ export class ReflectionCapabilities implements PlatformReflectionCapabilities {
         propMetadata[propName] = parentPropMetadata[propName];
       });
     }
-    const ownPropMetadata = this._ownPropMetadata(typeOrFunc, parentCtor);
+    const ownPropMetadata = this.ownPropMetadata(typeOrFunc, parentCtor);
     if (ownPropMetadata) {
       Object.keys(ownPropMetadata).forEach((propName) => {
         const decorators: any[] = [];
@@ -243,4 +197,34 @@ function getParentCtor(ctor: Function): Type<any> {
   // Note: We always use `Object` as the null value
   // to simplify checking later on.
   return parentCtor || Object;
+}
+
+function zipTypesAndAnnotations(
+  paramTypes: any[],
+  paramAnnotations: any[]
+): any[][] {
+  let result: any[][];
+
+  if (typeof paramTypes === "undefined") {
+    result = new Array(paramAnnotations.length);
+  } else {
+    result = new Array(paramTypes.length);
+  }
+
+  for (let i = 0; i < result.length; i++) {
+    // TS outputs Object for parameters without types, while Traceur omits
+    // the annotations. For now we preserve the Traceur behavior to aid
+    // migration, but this can be revisited.
+    if (typeof paramTypes === "undefined") {
+      result[i] = [];
+    } else if (paramTypes[i] && paramTypes[i] != Object) {
+      result[i] = [paramTypes[i]];
+    } else {
+      result[i] = [];
+    }
+    if (paramAnnotations && paramAnnotations[i] != null) {
+      result[i] = result[i].concat(paramAnnotations[i]);
+    }
+  }
+  return result;
 }

@@ -1,11 +1,7 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "target": "es2015",
     "module": "commonjs",
-    "strict": true,
-    "allowJs": true,
-    "noEmit": true,
-    "resolveJsonModule": true,
-    "moduleResolution": "node",
+    "resolveJsonModule": true
   }
 }

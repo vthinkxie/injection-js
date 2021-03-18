@@ -22,8 +22,8 @@ import {
   ResolvedReflectiveProvider,
   resolveReflectiveProviders,
 } from "./reflective_provider";
-import { THROW_IF_NOT_FOUND } from "./injector_compatibility";
 
+const THROW_IF_NOT_FOUND = {};
 // Threshold for the dynamic version
 const UNDEFINED = {};
 
@@ -296,41 +296,33 @@ export abstract class ReflectiveInjector implements Injector {
   abstract get(token: any, notFoundValue?: any): any;
 }
 
-// tslint:disable-next-line:class-name
 export class ReflectiveInjector_ implements ReflectiveInjector {
-  /** @internal */
-  _constructionCounter = 0;
-  /** @internal */
-  public _providers: ResolvedReflectiveProvider[];
-  /** @internal */
-  public _parent: Injector | null;
+  private constructionCounter = 0;
+  public providers: ResolvedReflectiveProvider[];
+  public parent: Injector | null;
 
   keyIds: number[];
   objs: any[];
   /**
    * Private
    */
-  constructor(_providers: ResolvedReflectiveProvider[], _parent?: Injector) {
-    this._providers = _providers;
-    this._parent = _parent || null;
+  constructor(providers: ResolvedReflectiveProvider[], parent?: Injector) {
+    this.providers = providers;
+    this.parent = parent || null;
 
-    const len = _providers.length;
+    const len = providers.length;
 
     this.keyIds = new Array(len);
     this.objs = new Array(len);
 
     for (let i = 0; i < len; i++) {
-      this.keyIds[i] = _providers[i].key.id;
+      this.keyIds[i] = providers[i].key.id;
       this.objs[i] = UNDEFINED;
     }
   }
 
   get(token: any, notFoundValue: any = THROW_IF_NOT_FOUND): any {
-    return this._getByKey(ReflectiveKey.get(token), null, notFoundValue);
-  }
-
-  get parent(): Injector | null {
-    return this._parent;
+    return this.getByKey(ReflectiveKey.get(token), null, notFoundValue);
   }
 
   resolveAndCreateChild(providers: Provider[]): ReflectiveInjector {
@@ -342,7 +334,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     providers: ResolvedReflectiveProvider[]
   ): ReflectiveInjector {
     const inj = new ReflectiveInjector_(providers);
-    inj._parent = this;
+    inj.parent = this;
     return inj;
   }
 
@@ -351,41 +343,40 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   }
 
   instantiateResolved(provider: ResolvedReflectiveProvider): any {
-    return this._instantiateProvider(provider);
+    return this.instantiateProvider(provider);
   }
 
   getProviderAtIndex(index: number): ResolvedReflectiveProvider {
-    if (index < 0 || index >= this._providers.length) {
+    if (index < 0 || index >= this.providers.length) {
       throw outOfBoundsError(index);
     }
-    return this._providers[index];
+    return this.providers[index];
   }
 
-  /** @internal */
-  _new(provider: ResolvedReflectiveProvider): any {
-    if (this._constructionCounter++ > this._getMaxNumberOfObjects()) {
+  private new(provider: ResolvedReflectiveProvider): any {
+    if (this.constructionCounter++ > this.getMaxNumberOfObjects()) {
       throw cyclicDependencyError(this, provider.key);
     }
-    return this._instantiateProvider(provider);
+    return this.instantiateProvider(provider);
   }
 
-  private _getMaxNumberOfObjects(): number {
+  private getMaxNumberOfObjects(): number {
     return this.objs.length;
   }
 
-  private _instantiateProvider(provider: ResolvedReflectiveProvider): any {
+  private instantiateProvider(provider: ResolvedReflectiveProvider): any {
     if (provider.multiProvider) {
       const res = new Array(provider.resolvedFactories.length);
       for (let i = 0; i < provider.resolvedFactories.length; ++i) {
-        res[i] = this._instantiate(provider, provider.resolvedFactories[i]);
+        res[i] = this.instantiate(provider, provider.resolvedFactories[i]);
       }
       return res;
     } else {
-      return this._instantiate(provider, provider.resolvedFactories[0]);
+      return this.instantiate(provider, provider.resolvedFactories[0]);
     }
   }
 
-  private _instantiate(
+  private instantiate(
     provider: ResolvedReflectiveProvider,
     ResolvedReflectiveFactory: ResolvedReflectiveFactory
   ): any {
@@ -394,7 +385,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     let deps: any[];
     try {
       deps = ResolvedReflectiveFactory.dependencies.map((dep) =>
-        this._getByReflectiveDependency(dep)
+        this.getByReflectiveDependency(dep)
       );
     } catch (e) {
       if (e.addKey) {
@@ -413,15 +404,15 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     return obj;
   }
 
-  private _getByReflectiveDependency(dep: ReflectiveDependency): any {
-    return this._getByKey(
+  private getByReflectiveDependency(dep: ReflectiveDependency): any {
+    return this.getByKey(
       dep.key,
       dep.visibility,
       dep.optional ? null : THROW_IF_NOT_FOUND
     );
   }
 
-  private _getByKey(
+  private getByKey(
     key: ReflectiveKey,
     visibility: Self | SkipSelf | null,
     notFoundValue: any
@@ -431,17 +422,17 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     }
 
     if (visibility instanceof Self) {
-      return this._getByKeySelf(key, notFoundValue);
+      return this.getByKeySelf(key, notFoundValue);
     } else {
-      return this._getByKeyDefault(key, notFoundValue, visibility);
+      return this.getByKeyDefault(key, notFoundValue, visibility);
     }
   }
 
-  private _getObjByKeyId(keyId: number): any {
+  private getObjByKeyId(keyId: number): any {
     for (let i = 0; i < this.keyIds.length; i++) {
       if (this.keyIds[i] === keyId) {
         if (this.objs[i] === UNDEFINED) {
-          this.objs[i] = this._new(this._providers[i]);
+          this.objs[i] = this.new(this.providers[i]);
         }
 
         return this.objs[i];
@@ -451,8 +442,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     return UNDEFINED;
   }
 
-  /** @internal */
-  _throwOrNull(key: ReflectiveKey, notFoundValue: any): any {
+  private throwOrNull(key: ReflectiveKey, notFoundValue: any): any {
     if (notFoundValue !== THROW_IF_NOT_FOUND) {
       return notFoundValue;
     } else {
@@ -460,14 +450,12 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     }
   }
 
-  /** @internal */
-  _getByKeySelf(key: ReflectiveKey, notFoundValue: any): any {
-    const obj = this._getObjByKeyId(key.id);
-    return obj !== UNDEFINED ? obj : this._throwOrNull(key, notFoundValue);
+  private getByKeySelf(key: ReflectiveKey, notFoundValue: any): any {
+    const obj = this.getObjByKeyId(key.id);
+    return obj !== UNDEFINED ? obj : this.throwOrNull(key, notFoundValue);
   }
 
-  /** @internal */
-  _getByKeyDefault(
+  private getByKeyDefault(
     key: ReflectiveKey,
     notFoundValue: any,
     visibility: Self | SkipSelf | null
@@ -475,26 +463,25 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     let inj: Injector | null;
 
     if (visibility instanceof SkipSelf) {
-      inj = this._parent;
+      inj = this.parent;
     } else {
       inj = this;
     }
 
     while (inj instanceof ReflectiveInjector_) {
-      const inj_ = <ReflectiveInjector_>inj;
-      const obj = inj_._getObjByKeyId(key.id);
+      const obj = inj.getObjByKeyId(key.id);
       if (obj !== UNDEFINED) return obj;
-      inj = inj_._parent;
+      inj = inj.parent;
     }
     if (inj !== null) {
       return inj.get(key.token, notFoundValue);
     } else {
-      return this._throwOrNull(key, notFoundValue);
+      return this.throwOrNull(key, notFoundValue);
     }
   }
 
   get displayName(): string {
-    const providers = _mapProviders(
+    const providers = mapProviders(
       this,
       (b: ResolvedReflectiveProvider) => ' "' + b.key.displayName + '" '
     ).join(", ");
@@ -508,9 +495,9 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
 
 const INJECTOR_KEY = ReflectiveKey.get(Injector);
 
-function _mapProviders(injector: ReflectiveInjector_, fn: Function): any[] {
-  const res: any[] = new Array(injector._providers.length);
-  for (let i = 0; i < injector._providers.length; ++i) {
+function mapProviders(injector: ReflectiveInjector_, fn: Function): any[] {
+  const res: any[] = new Array(injector.providers.length);
+  for (let i = 0; i < injector.providers.length; ++i) {
     res[i] = fn(injector.getProviderAtIndex(i));
   }
   return res;

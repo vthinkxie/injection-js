@@ -258,7 +258,6 @@ export function outOfBoundsError(index: number) {
   return Error(`Index ${index} is out-of-bounds.`);
 }
 
-// TODO: add a working example after alpha38 is released
 /**
  * Thrown when a multi provider and a regular provider are bound to the same token.
  *

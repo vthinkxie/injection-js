@@ -41,14 +41,14 @@ export class ReflectiveKey {
    * Retrieves a `Key` for a token.
    */
   static get(token: any): ReflectiveKey {
-    return _globalKeyRegistry.get(resolveForwardRef(token));
+    return globalKeyRegistry.get(resolveForwardRef(token));
   }
 
   /**
    * @returns the number of keys registered in the system.
    */
   static get numberOfKeys(): number {
-    return _globalKeyRegistry.numberOfKeys;
+    return globalKeyRegistry.numberOfKeys;
   }
 }
 
@@ -56,23 +56,23 @@ export class ReflectiveKey {
  * @internal
  */
 export class KeyRegistry {
-  private _allKeys = new Map<any, ReflectiveKey>();
+  private allKeys = new Map<any, ReflectiveKey>();
 
   get(token: any): ReflectiveKey {
     if (token instanceof ReflectiveKey) {
       return token;
-    } else if (this._allKeys.has(token)) {
-      return this._allKeys.get(token)!;
+    } else if (this.allKeys.has(token)) {
+      return this.allKeys.get(token)!;
     } else {
       const newKey = new ReflectiveKey(token, ReflectiveKey.numberOfKeys);
-      this._allKeys.set(token, newKey);
+      this.allKeys.set(token, newKey);
       return newKey;
     }
   }
 
   get numberOfKeys(): number {
-    return this._allKeys.size;
+    return this.allKeys.size;
   }
 }
 
-const _globalKeyRegistry = new KeyRegistry();
+const globalKeyRegistry = new KeyRegistry();

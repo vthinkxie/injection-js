@@ -50,7 +50,7 @@ export class ReflectiveDependency {
   }
 }
 
-const _EMPTY_LIST: any[] = [];
+const EMPTY_LIST: any[] = [];
 
 /**
  * An internal resolved representation of a {@link Provider} used by the {@link Injector}.
@@ -70,35 +70,22 @@ const _EMPTY_LIST: any[] = [];
  *
  * @experimental
  */
-export interface ResolvedReflectiveProvider {
-  /**
-   * A key, usually a `Type<any>`.
-   */
-  key: ReflectiveKey;
-
-  /**
-   * Factory function which can return an instance of an object represented by a key.
-   */
-  resolvedFactories: ResolvedReflectiveFactory[];
-
-  /**
-   * Indicates if the provider is a multi-provider or a regular provider.
-   */
-  multiProvider: boolean;
-}
-
-export class ResolvedReflectiveProvider_ implements ResolvedReflectiveProvider {
+export class ResolvedReflectiveProvider {
   constructor(
+    /**
+     * A key, usually a `Type<any>`.
+     */
     public key: ReflectiveKey,
+    /**
+     * Factory function which can return an instance of an object represented by a key.
+     */
     public resolvedFactories: ResolvedReflectiveFactory[],
+    /**
+     * Indicates if the provider is a multi-provider or a regular provider.
+     */
     public multiProvider: boolean
   ) {}
-
-  get resolvedFactory(): ResolvedReflectiveFactory {
-    return this.resolvedFactories[0];
-  }
 }
-
 /**
  * An internal resolved representation of a factory function created by resolving {@link
  * Provider}.
@@ -128,7 +115,7 @@ function resolveReflectiveFactory(
   if (provider.useClass) {
     const useClass = resolveForwardRef(provider.useClass);
     factoryFn = reflector.factory(useClass);
-    resolvedDeps = _dependenciesFor(useClass);
+    resolvedDeps = dependenciesFor(useClass);
   } else if (provider.useExisting) {
     factoryFn = (aliasInstance: any) => aliasInstance;
     resolvedDeps = [
@@ -139,7 +126,7 @@ function resolveReflectiveFactory(
     resolvedDeps = constructDependencies(provider.useFactory, provider.deps);
   } else {
     factoryFn = () => provider.useValue;
-    resolvedDeps = _EMPTY_LIST;
+    resolvedDeps = EMPTY_LIST;
   }
   return new ResolvedReflectiveFactory(factoryFn, resolvedDeps);
 }
@@ -153,7 +140,7 @@ function resolveReflectiveFactory(
 function resolveReflectiveProvider(
   provider: NormalizedProvider
 ): ResolvedReflectiveProvider {
-  return new ResolvedReflectiveProvider_(
+  return new ResolvedReflectiveProvider(
     ReflectiveKey.get(provider.provide),
     [resolveReflectiveFactory(provider)],
     provider.multi || false
@@ -166,7 +153,7 @@ function resolveReflectiveProvider(
 export function resolveReflectiveProviders(
   providers: Provider[]
 ): ResolvedReflectiveProvider[] {
-  const normalized = _normalizeProviders(providers, []);
+  const normalized = normalizeProviders(providers, []);
   const resolved = normalized.map(resolveReflectiveProvider);
   const resolvedProviderMap = mergeResolvedReflectiveProviders(
     resolved,
@@ -201,7 +188,7 @@ export function mergeResolvedReflectiveProviders(
     } else {
       let resolvedProvider: ResolvedReflectiveProvider;
       if (provider.multiProvider) {
-        resolvedProvider = new ResolvedReflectiveProvider_(
+        resolvedProvider = new ResolvedReflectiveProvider(
           provider.key,
           provider.resolvedFactories.slice(),
           provider.multiProvider
@@ -215,7 +202,7 @@ export function mergeResolvedReflectiveProviders(
   return normalizedProvidersMap;
 }
 
-function _normalizeProviders(
+function normalizeProviders(
   providers: Provider[],
   res: NormalizedProvider[]
 ): NormalizedProvider[] {
@@ -225,7 +212,7 @@ function _normalizeProviders(
     } else if (b && typeof b === "object" && (b as any).provide !== undefined) {
       res.push(b as NormalizedProvider);
     } else if (Array.isArray(b)) {
-      _normalizeProviders(b as Provider[], res);
+      normalizeProviders(b as Provider[], res);
     } else {
       throw invalidProviderError(b);
     }
@@ -239,24 +226,24 @@ export function constructDependencies(
   dependencies?: any[]
 ): ReflectiveDependency[] {
   if (!dependencies) {
-    return _dependenciesFor(typeOrFunc);
+    return dependenciesFor(typeOrFunc);
   } else {
     const params: any[][] = dependencies.map((t) => [t]);
-    return dependencies.map((t) => _extractToken(typeOrFunc, t, params));
+    return dependencies.map((t) => extractToken(typeOrFunc, t, params));
   }
 }
 
-function _dependenciesFor(typeOrFunc: any): ReflectiveDependency[] {
+function dependenciesFor(typeOrFunc: any): ReflectiveDependency[] {
   const params = reflector.parameters(typeOrFunc);
 
   if (!params) return [];
   if (params.some((p) => p == null)) {
     throw noAnnotationError(typeOrFunc, params);
   }
-  return params.map((p) => _extractToken(typeOrFunc, p, params));
+  return params.map((p) => extractToken(typeOrFunc, p, params));
 }
 
-function _extractToken(
+function extractToken(
   typeOrFunc: any,
   metadata: any[] | any,
   params: any[][]
@@ -266,9 +253,9 @@ function _extractToken(
 
   if (!Array.isArray(metadata)) {
     if (metadata instanceof Inject) {
-      return _createDependency(metadata["token"], optional, null);
+      return createDependency(metadata["token"], optional, null);
     } else {
-      return _createDependency(metadata, optional, null);
+      return createDependency(metadata, optional, null);
     }
   }
 
@@ -296,13 +283,13 @@ function _extractToken(
   token = resolveForwardRef(token);
 
   if (token != null) {
-    return _createDependency(token, optional, visibility);
+    return createDependency(token, optional, visibility);
   } else {
     throw noAnnotationError(typeOrFunc, params);
   }
 }
 
-function _createDependency(
+function createDependency(
   token: any,
   optional: boolean,
   visibility: Self | SkipSelf | null
